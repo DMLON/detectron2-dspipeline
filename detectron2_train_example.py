@@ -30,10 +30,10 @@ def parse_args():
 def main(args):
     # Create pipeline steps
 
-    load_voc_instances_train = LoadVOCInstance("dspipeline/assets/datasets/licenseplates","train")
-    register_data_train = RegisterData("licenseplates_train", "dspipeline/assets/datasets/licenseplates", "train")
-    load_voc_instances_test = LoadVOCInstance("dspipeline/assets/datasets/licenseplates","test")
-    register_data_test = RegisterData("licenseplates_train", "dspipeline/assets/datasets/licenseplates", "train")
+    load_voc_instances_train = LoadVOCInstance("detectron2-dspipeline/assets/datasets/licenseplates","train")
+    register_data_train = RegisterData("licenseplates_train", "detectron2-dspipeline/assets/datasets/licenseplates", "train")
+    load_voc_instances_test = LoadVOCInstance("detectron2-dspipeline/assets/datasets/licenseplates","test")
+    register_data_test = RegisterData("licenseplates_train", "detectron2-dspipeline/assets/datasets/licenseplates", "train")
     set_config=SetConfig(args)
     train_model=TrainModel()
 

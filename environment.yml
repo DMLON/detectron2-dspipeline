@@ -1,4 +1,4 @@
-name: dspipeline-detectron2-licenseplates
+name: detectron2-dspipeline
 channels:
   - pytorch
   - defaults
@@ -94,4 +94,5 @@ dependencies:
     - werkzeug==1.0.1
     - yacs==0.1.8
     - zipp==3.4.1
-prefix: /home/administrator/miniconda3/envs/dspipeline-detectron2-licenseplates
+    - 'git+https://github.com/chrisferreyra13/dspipeline'
+prefix: /home/administrator/miniconda3/envs/detectron2-dspipeline

@@ -1,10 +1,14 @@
 from detectron2.data import DatasetCatalog, MetadataCatalog
-
-from ..pipeline import Pipeline
+#from load_voc_instances import LoadVOCInstance
+from dspipeline.transformers.pipeline import Pipeline
+import sys 
 
 CLASS_NAMES = [
     "licenseplate",
 ]
+
+def get_dataset(dict):
+    return dict
 
 class RegisterData(Pipeline):
     """Pipeline task to register VOC annotations."""
@@ -19,8 +23,8 @@ class RegisterData(Pipeline):
         split : str
             one for "train" and one for "test"
         """
-        self.dirname=name
-        self.split=dirname
+        self.name=name
+        self.dirname=dirname
         self.split=split
 
         super(RegisterData,self).__init__()
@@ -34,13 +38,14 @@ class RegisterData(Pipeline):
                 # Buffer the pipeline stream
                 data = next(self.source)
                 dataset.append(data)
-            except StopIteration:
+            except:
+                e = sys.exc_info()[0]
                 stop = True
 
             if len(dataset) and stop:
                 DatasetCatalog.register(
                     self.name,
-                    lambda: get_dataset(dataset))
+                    lambda: dataset)
 
                 MetadataCatalog.get(self.name).set(
                     thing_classes=CLASS_NAMES,
@@ -50,6 +55,30 @@ class RegisterData(Pipeline):
                 if self.filter(data):
                     yield True
 
-        def get_dataset(dict):
-            return dict
+        
 
+if __name__ == '__main__':
+    # print('Testing')
+    # load_voc_instances_train = LoadVOCInstance("detectron2-dspipeline/assets/datasets/licenseplates","train")
+    # register_data_train = RegisterData("licenseplates_train", "detectron2-dspipeline/assets/datasets/licenseplates", "train")
+    # pipeline = load_voc_instances_train | register_data_train
+    
+    # for i in pipeline.generator():
+    #     print(i)
+
+    print('Testing - 2')
+    load_voc_instances_train = LoadVOCInstance("detectron2-dspipeline/assets/datasets/licenseplates","train")
+    register_data_train = RegisterData("licenseplates_train", "detectron2-dspipeline/assets/datasets/licenseplates", "train")
+    load_voc_instances_test = LoadVOCInstance("detectron2-dspipeline/assets/datasets/licenseplates","test")
+    register_data_test = RegisterData("licenseplates_test", "detectron2-dspipeline/assets/datasets/licenseplates", "test")
+
+    pipeline = load_voc_instances_train | register_data_train | load_voc_instances_test | register_data_test
+    
+    for i in pipeline.generator():
+        print(i)
+
+    # load_voc_instances_test = LoadVOCInstance("detectron2-dspipeline/assets/datasets/licenseplates","test")
+    # register_data_test = RegisterData("licenseplates_test", "detectron2-dspipeline/assets/datasets/licenseplates", "test")
+    # pipeline = load_voc_instances_test | register_data_test
+    # for i in pipeline.generator():
+    #     print(i)

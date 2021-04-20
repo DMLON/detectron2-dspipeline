@@ -6,8 +6,8 @@ import xml.etree.ElementTree as ET
 
 from detectron2.structures import BoxMode
 
-from ..pipeline import Pipeline
-from ..utils.files import list_files_in_txt
+from dspipeline.transformers.pipeline import Pipeline
+from dspipeline.transformers.utils.files import list_files_in_txt
 
 CLASS_NAMES = [
     "licenseplate",
@@ -29,8 +29,13 @@ class LoadVOCInstance(Pipeline):
 
     def generator(self):
         """Yields the image content and annotations."""
-        source = next(self.source) if self.source else list_files_in_txt(self.dirname, self.split)  #if this is test step
-        
+        if self.source:
+            source=next(self.source)
+            if source:
+                source=list_files_in_txt(self.dirname, self.split)
+        else:
+            source=list_files_in_txt(self.dirname, self.split)
+
         while self.has_next():
             try:
                 fileid=next(source)
@@ -65,6 +70,7 @@ class LoadVOCInstance(Pipeline):
 
 if __name__ == '__main__':
     print('Testing')
-    load_voc_instances_train = LoadVOCInstance("dspipeline/assets/datasets/licenseplates","train")
+    
+    load_voc_instances_train = LoadVOCInstance("detectron2-dspipeline/assets/datasets/licenseplates","train")
     for i in load_voc_instances_train.generator():
         print(i)

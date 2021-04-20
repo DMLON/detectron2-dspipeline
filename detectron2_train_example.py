@@ -2,7 +2,6 @@ import os
 import argparse
 from processor import Processor
 
-from licenseplates.config import setup_cfg
 from detectron2.engine import  launch
 from detectron2.engine import default_argument_parser
 
@@ -31,16 +30,19 @@ def parse_args():
 def main(args):
     # Create pipeline steps
 
-    load_voc_instances = LoadVOCInstance("assets/datasets/licenseplates","train")
-    register_data_train = RegisterData("licenseplates_train", "assets/datasets/licenseplates", "train")
-    register_data_test = RegisterData("licenseplates_train", "assets/datasets/licenseplates", "train")
-
+    load_voc_instances_train = LoadVOCInstance("dspipeline/assets/datasets/licenseplates","train")
+    register_data_train = RegisterData("licenseplates_train", "dspipeline/assets/datasets/licenseplates", "train")
+    load_voc_instances_test = LoadVOCInstance("dspipeline/assets/datasets/licenseplates","test")
+    register_data_test = RegisterData("licenseplates_train", "dspipeline/assets/datasets/licenseplates", "train")
     set_config=SetConfig(args)
     train_model=TrainModel()
+
+
     # Create image processing pipeline
     pipeline = (
-        load_voc_instances |
+        load_voc_instances_train |
         register_data_train |
+        load_voc_instances_test  |
         register_data_test |
         set_config  |
         train_model
@@ -60,6 +62,16 @@ if __name__ == "__main__":
     args = default_argument_parser().parse_args()
     print("Command Line Args:", args)
 
+    args=argparse.Namespace(
+        config_file='configs/lp_faster_rcnn_R_50_FPN_3x.yaml',
+         dist_url='tcp://127.0.0.1:50152', 
+         eval_only=False, 
+         machine_rank=0, 
+         num_gpus=1, 
+         num_machines=1, 
+         opts=[], 
+         resume=False)   # Disable when run through terminal
+    
     launch(
         main,
         args.num_gpus,

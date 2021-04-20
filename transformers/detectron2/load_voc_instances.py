@@ -15,7 +15,7 @@ CLASS_NAMES = [
 
 class LoadVOCInstance(Pipeline):
     """Pipeline task to load VOC annotations."""
-    def __init__(self,dirname):
+    def __init__(self,dirname,split):
         """
         Parameters
         ----------
@@ -23,14 +23,17 @@ class LoadVOCInstance(Pipeline):
             path to "annotations" and "images".
         """
         self.dirname=dirname
+        self.split=split
 
         super(LoadVOCInstance,self).__init__()
 
-    def generator(self,split):
+    def generator(self):
         """Yields the image content and annotations."""
-        fileid=list_files_in_txt(self.dirname, split)
+        source = next(self.source) if self.source else list_files_in_txt(self.dirname, self.split)  #if this is test step
+        
         while self.has_next():
             try:
+                fileid=next(source)
                 anno_file = os.path.join(self.dirname, "annotations", fileid + ".xml")
                 jpeg_file = os.path.join(self.dirname, "images", fileid + ".jpg")
 
@@ -58,3 +61,10 @@ class LoadVOCInstance(Pipeline):
 
             except StopIteration:
                 return
+
+
+if __name__ == '__main__':
+    print('Testing')
+    load_voc_instances_train = LoadVOCInstance("dspipeline/assets/datasets/licenseplates","train")
+    for i in load_voc_instances_train.generator():
+        print(i)

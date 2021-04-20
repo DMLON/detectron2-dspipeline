@@ -32,7 +32,7 @@ class RegisterData(Pipeline):
         while self.has_next() and not stop:
             try:
                 # Buffer the pipeline stream
-                data = next(self.source(self.split))
+                data = next(self.source)
                 dataset.append(data)
             except StopIteration:
                 stop = True
@@ -40,7 +40,7 @@ class RegisterData(Pipeline):
             if len(dataset) and stop:
                 DatasetCatalog.register(
                     self.name,
-                    dataset)
+                    lambda: get_dataset(dataset))
 
                 MetadataCatalog.get(self.name).set(
                     thing_classes=CLASS_NAMES,
@@ -49,3 +49,7 @@ class RegisterData(Pipeline):
 
                 if self.filter(data):
                     yield True
+
+        def get_dataset(dict):
+            return dict
+

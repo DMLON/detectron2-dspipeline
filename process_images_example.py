@@ -47,12 +47,12 @@ def main(args):
             print(f"[INFO] Finalizing process [{process.id}]...")
 
 if __name__ == "__main__":
-    #args = parse_args()    # Disable during debugging 
-    args=argparse.Namespace(
-        input="assets/images", 
-        output="output",
-        out_summary="output.json",
-        batch_size=1
-        )   # Disable when run through terminal
+    args = parse_args()    # Disable during debugging 
+    # args=argparse.Namespace(
+    #     input="assets/images", 
+    #     output="output",
+    #     out_summary="output.json",
+    #     batch_size=1
+    #     )   # Disable when run through terminal
 
     main(args)

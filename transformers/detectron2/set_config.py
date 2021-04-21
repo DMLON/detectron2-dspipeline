@@ -19,19 +19,25 @@ class SetConfig(Pipeline):
         super(SetConfig,self).__init__()
 
     def map(self,data):
-        """Register data in detectron2."""
+        """Set config on detectron2."""
         cfg = get_cfg()
         cfg.merge_from_file(self.args.config_file)
         cfg.merge_from_list(self.args.opts)
-        if self.args.outputdir is not None:
-            cfg.OUTPUT_DIR = self.args.outputdir
+
+        if "outputdir" in self.args:
+            if self.args.outputdir is not None:
+                cfg.OUTPUT_DIR = self.args.outputdir
+            
+            os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
+            
         cfg.freeze()
         default_setup(cfg, self.args)
-        os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
-        return cfg
+        
+        data["cfg"]=cfg
+        return data
 
     def filter(self,data): #Dataset is registered => set config
-        if data is True:
-            return True
+        if data==True:
+            return {}
         else:
-            return False
+            return data

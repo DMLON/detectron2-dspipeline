@@ -23,13 +23,13 @@ class TrainModel(Pipeline):
     def map(self,data):
         """Train model specified in config."""
         if self.args.eval_only:
-            model = Trainer.build_model(data)
-            DetectionCheckpointer(model, save_dir=data.OUTPUT_DIR).resume_or_load(
-                data.MODEL.WEIGHTS, resume=self.args.resume
+            model = Trainer.build_model(data["cfg"])
+            DetectionCheckpointer(model, save_dir=data["cfg"].OUTPUT_DIR).resume_or_load(
+                data["cfg"].MODEL.WEIGHTS, resume=self.args.resume
             )
-            res = Trainer.test(data, model)
+            res = Trainer.test(data["cfg"], model)
             return res
 
-        trainer = Trainer(data)
+        trainer = Trainer(data["cfg"])
         trainer.resume_or_load(resume=self.args.resume)
         return trainer.train()

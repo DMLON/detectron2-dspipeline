@@ -23,7 +23,7 @@ class Predictor(Pipeline):
         predictor=DefaultPredictor(data["cfg"])
         
         for f in data["files"]:
-            img = cv2.imread(f)
+            img = cv2.imread(f["file_name"])
             prediction = predictor(img)
             result={
                 "image":img, 

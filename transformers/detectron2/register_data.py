@@ -7,9 +7,6 @@ CLASS_NAMES = [
     "licenseplate",
 ]
 
-def get_dataset(dict):
-    return dict
-
 class RegisterData(Pipeline):
     """Pipeline task to register VOC annotations."""
     def __init__(self,name,dirname,split):

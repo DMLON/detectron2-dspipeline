@@ -50,19 +50,10 @@ def main(args):
         train_model
     )
 
-    #pipeline_train = (load_voc_instances_train | register_data_train)
-    #pipeline_test = (load_voc_instances_test  | register_data_test)
-    #pipeline_model = (set_config  | train_model)
-    
     # Create processor for processing pipeline
     process=Processor(pipeline)
-    #process_train=Processor(pipeline_train)
-    #process_test=Processor(pipeline_test)
-    #process_model=Processor(pipeline_model)
+
     try:
-        #process_train.run(verbose=True)
-        #process_test.run(verbose=True)
-        #process_model.run(verbose=True)
         process.run(verbose=True)
     except:
         e = sys.exc_info()[0]

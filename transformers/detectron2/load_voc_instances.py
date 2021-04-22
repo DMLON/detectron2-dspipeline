@@ -21,6 +21,8 @@ class LoadVOCInstance(Pipeline):
         ----------
         dirname : str
             path to "annotations" and "images".
+        split : str
+            path to "annotations" and "images" txt files.
         """
         self.dirname=dirname
         self.split=split

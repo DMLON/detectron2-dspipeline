@@ -1,39 +1,43 @@
 
+import os
 from dspipeline.transformers.pipeline import Pipeline
 
-from dspipeline.transformers.utils.files import list_files
+from dspipeline.transformers.utils.files import list_files_in_txt
 
 class LoadTestImages(Pipeline):
     """Pipeline task to get paths to images."""
-    def __init__(self,path,valid_exts=(".jpg", ".png"),level=None):
+    def __init__(self,dirname,split):
         """
         Parameters
         ----------
-        path : str
-           Path to test images folder.
+        dirname : str
+            path to "annotations" and "images".
+        split : str
+            path to "annotations" and "images" txt files.
         """
-        self.path=path
-        self.valid_exts=valid_exts
-        self.level=level
+        self.dirname=dirname
+        self.split=split
 
         super(LoadTestImages,self).__init__()
 
     def generator(self):
         """Yields paths to images."""
-        data={}
-        data["files"]=[]
-        stop=False
-        source=list_files(self.path,self.valid_exts,self.level)
+
+        source=list_files_in_txt(self.dirname, self.split)
         while self.has_next():
-            try:
-                img=next(source)
-                data["files"].append(img)
-            except StopIteration:
-                stop=True
-        
-            if len(data["files"]) and stop:
+            try:              
+                fileid=next(source)
+                jpeg_file = os.path.join(self.dirname, "images", fileid + ".jpg")
+                data = {
+                    "file_name": jpeg_file,
+                    "image_id": fileid,
+                }
                 if self.filter(data):
                     yield self.map(data)
+
+            except StopIteration:
+                return
+
         
                     
 

@@ -20,6 +20,11 @@ class SetConfig(Pipeline):
 
     def map(self,data):
         """Set config on detectron2."""
+        if data==True:
+            data={}
+        else:
+            data=data
+
         cfg = get_cfg()
         cfg.merge_from_file(self.args.config_file)
         cfg.merge_from_list(self.args.opts)
@@ -36,8 +41,4 @@ class SetConfig(Pipeline):
         data["cfg"]=cfg
         return data
 
-    def filter(self,data): #Dataset is registered => set config
-        if data==True:
-            return {}
-        else:
-            return data
+        

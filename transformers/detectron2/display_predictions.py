@@ -10,11 +10,13 @@ class DisplayPredictions(Pipeline):
         """
         Parameters
         ----------
-        args : argparser
-            Args from terminal.
+        scale : int
+            scale.
+        dataset_name : str
+            Dataset's names.
         """
-        self.dataset_name=dataset_name
         self.scale=scale
+        self.dataset_name=dataset_name
 
         super(DisplayPredictions,self).__init__()
 

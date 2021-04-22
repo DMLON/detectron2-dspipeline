@@ -1,4 +1,3 @@
-import random
 import cv2
 import sys
 import argparse
@@ -6,7 +5,9 @@ import argparse
 from dspipeline.processor import Processor
 
 from transformers.detectron2.load_test_images import LoadTestImages
+from transformers.detectron2.register_data import RegisterData
 from transformers.detectron2.set_config import SetConfig
+from transformers.detectron2.samples_from_catalog import SamplesFromCatalog
 
 from transformers.detectron2.predictor import Predictor
 from transformers.detectron2.display_predictions import DisplayPredictions
@@ -43,8 +44,10 @@ def main(args):
     # Create pipeline steps
     dataset_name = "licenseplates_test"
 
-    load_test_images=LoadTestImages(path="detectron2-dspipeline/assets/images/licenseplates")
+    load_test_images=LoadTestImages("detectron2-dspipeline/assets/datasets/licenseplates","test")
+    register_data_test = RegisterData(dataset_name, "detectron2-dspipeline/assets/datasets/licenseplates", "test")
     set_config=SetConfig(args)
+    samples_from_catalog=SamplesFromCatalog(dataset_name, args.samples)
     predictor=Predictor()
     display_predictions=DisplayPredictions(args.scale, dataset_name)
 
@@ -52,7 +55,9 @@ def main(args):
 
     pipeline = (
         load_test_images  |
+        register_data_test  |
         set_config  |
+        samples_from_catalog   |
         predictor   |
         display_predictions
     )
@@ -73,15 +78,15 @@ def main(args):
 
 
 if __name__ == "__main__":
-    args = parse_args()    #Enable when the script is running through terminal
+    #args = parse_args()    #Enable when the script is running through terminal
     #print("Command Line Args:", args)
-
-    '''args=argparse.Namespace(
+    print(os.path.abspath)
+    args=argparse.Namespace(
         config_file='detectron2-dspipeline/configs/lp_faster_rcnn_R_50_FPN_3x.yaml',
-        samples=10,
-        scale=1.0,
-        confidence_threshold=0.5,
-        opts=[]
+        samples=3,
+        scale=0.8,
+        confidence_threshold=0.85,
+        opts=['MODEL.WEIGHTS', 'detectron2-dspipeline/output/model_final.pth']
          )   # Disable when run through terminal'''
 
     main(args)

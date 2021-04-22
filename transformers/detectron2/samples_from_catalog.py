@@ -15,23 +15,20 @@ class SamplesFromCatalog(Pipeline):
         samples : int
             Number of samples to get.
         """
-        self.samples=samples
         self.dataset_name=dataset_name
+        self.samples=samples
 
         super(SamplesFromCatalog,self).__init__()
 
     def map(self,data):
         """Yields the image content and annotations."""
 
-        dict={}
-        dict["cfg"]=data
-        dict["files"]=[]
+        data["files"]=[]
 
         dataset=DatasetCatalog.get(self.dataset_name)
-
         for d in random.sample(dataset, self.samples):
-            dict["files"].append(d)
+            data["files"].append(d)
         
-        return dict
+        return data
 
 

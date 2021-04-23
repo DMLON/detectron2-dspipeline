@@ -11,7 +11,7 @@ class LoadTestImages(Pipeline):
         Parameters
         ----------
         dirname : str
-            path to "annotations" and "images".
+            path to "images" folder.
         split : str
             path to "annotations" and "images" txt files.
         """
